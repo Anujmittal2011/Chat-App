@@ -29,8 +29,8 @@
 // export default UploadFile;
 
 
-// const URL = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`;
-const URL = `https://chat-app-1-2uk8.onrender.com/image/upload`
+const URL = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`;
+// const URL = `https://chat-app-1-2uk8.onrender.com/image/upload`
 
 const UploadFile = async(file) => {
   const formData = new FormData();
