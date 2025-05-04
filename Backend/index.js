@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const {app,server} = require('./socket/index')
 
 app.use(cors({
-   origin: process.env.FRONTEND_URL,
+   origin: "https://chat-app-1-2uk8.onrender.com",
    credentials: true
 }));
 
