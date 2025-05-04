@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { Link, useNavigate } from 'react-router-dom';
 import uploadFile from '../helpers/UploadFile';
-import axios from 'axios'
-import toast from 'react-hot-toast'
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const RegisterPage = () => {
   const [data, setData] = useState({
@@ -13,10 +13,9 @@ const RegisterPage = () => {
     profile_pic: ''
   });
 
-  const [fileName, setFileName] = useState(''); // For file name display
+  const [fileName, setFileName] = useState('');
   const navigate = useNavigate();
 
-  // Handle form data change
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setData((prev) => ({
@@ -26,62 +25,57 @@ const RegisterPage = () => {
   };
 
   const handleUploadPhoto = async (e) => {
-    const file = e.target.files[0]; // Get the file
-    setFileName(file.name); // Store file name
-    const uploadedFile = await uploadFile(file); // Upload the file
-  
+    const file = e.target.files[0];
+    setFileName(file.name);
+    const uploadedFile = await uploadFile(file);
+
     if (uploadedFile) {
       setData((prev) => ({
         ...prev,
-        profile_pic: uploadedFile.secure_url, // Store the file URL in the form data
+        profile_pic: uploadedFile.secure_url,
       }));
     }
   };
 
   const handleClearUploadPhoto = (e) => {
     e.stopPropagation();
-    e.preventDefault(); 
-    setFileName(''); // Clear file name
+    e.preventDefault();
+    setFileName('');
     setData((prev) => ({
       ...prev,
-      profile_pic: '', // Clear the uploaded photo URL
+      profile_pic: '',
     }));
   };
 
-  // Handle form submission
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const URL = `${process.env.REACT_APP_BACKEND_URL}/api/register`
+    // 🔁 Hardcoded backend URL
+    const URL = `https://chat-app-zac0.onrender.com/api/register`;
 
-    try{
-      const response = await axios.post(URL, data)
-      console.log("response", response)
+    try {
+      const response = await axios.post(URL, data, {
+        withCredentials: true
+      });
 
-      toast.success(response.data.message)
+      toast.success(response.data.message);
 
-      if(response.data.success){
+      if (response.data.success) {
         setData({
           name: '',
           email: '',
           password: '',
           profile_pic: ''
-        })
-        navigate('/email')
+        });
+        navigate('/email');
       }
-    }catch(error){
-      toast.error(error?.response?.data?.message
-      )
-      console.log("data",data)
+    } catch (error) {
+      toast.error(error?.response?.data?.message || 'Registration failed');
+      console.log('data', data);
     }
-    
-    console.log('Submitted data:', data);
   };
 
-
-
-  // Function to trigger file input when clicking on the div
   const handleClickUploadDiv = () => {
     document.getElementById('profile_pic').click();
   };
@@ -139,7 +133,7 @@ const RegisterPage = () => {
               Photo:
               <div
                 className="h-14 bg-slate-200 flex justify-center items-center rounded hover:border-primary cursor-pointer"
-                onClick={handleClickUploadDiv} // Trigger file input on click
+                onClick={handleClickUploadDiv}
               >
                 <p className="text-sm max-w-[300px] text-ellipsis line-clamp-1">
                   {fileName ? fileName : 'Upload Profile Photo'}
