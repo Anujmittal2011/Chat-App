@@ -3,33 +3,30 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Avtar from '../component/Avtar';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setToken, setUser } from '../redux/UserSlice';
 
 const CheckPasswordPage = () => {
   const [data, setData] = useState({
     password: '',
-    email: '' // Ensure email is being set
+    email: ''
   });
 
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch()
-  
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    // Ensure the user is redirected if required data (name, email) is missing
     if (!location?.state?.name || !location?.state?.email) {
-      navigate('/email'); // Redirect if name or email is not available
+      navigate('/email');
     } else {
-      // Pre-populate email when location.state is available
       setData((prev) => ({
         ...prev,
-        email: location.state.email // Set email from location.state
+        email: location.state.email
       }));
     }
   }, [location, navigate]);
 
-  // Handle form data change
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setData((prev) => ({
@@ -38,45 +35,41 @@ const CheckPasswordPage = () => {
     }));
   };
 
-  // Handle form submission
-  const handleSubmit = async(e)=>{
-    e.preventDefault()
-    e.stopPropagation()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-    const URL = `${process.env.REACT_APP_BACKEND_URL}/api/password`
+    // ✅ Hardcoded backend URL
+    const URL = `https://chat-app-zac0.onrender.com/api/password`;
 
-   
     try {
-        const response = await axios({
-          method:'post',
-          url: URL,
-          data : {
-          userId : location?.state?._id,
-          password:data.password
+      const response = await axios.post(
+        URL,
+        {
+          userId: location?.state?._id,
+          password: data.password
         },
-          withCredentials: true
-        })
+        { withCredentials: true }
+      );
 
-        toast.success(response.data.message)
+      toast.success(response.data.message);
 
-        if(response.data.success){
-            dispatch(setToken(response?.data?.token))
-            localStorage.setItem('token',response?.data?.token)
+      if (response.data.success) {
+        dispatch(setToken(response?.data?.token));
+        localStorage.setItem('token', response?.data?.token);
 
-            setData({
-              password : "",
-            })
-            navigate('/')
-        }
+        setData({ password: '' });
+        navigate('/');
+      }
     } catch (error) {
-        toast.error(error?.response?.data?.message)
+      toast.error(error?.response?.data?.message || 'Something went wrong');
     }
-  }
+  };
 
   return (
     <div className="mt-5">
       <div className="bg-white w-full max-w-md rounded overflow-hidden p-4 mx-auto">
-        <div className="w-fit mx-auto mb-2 flex justify-center item-center flex-col">
+        <div className="w-fit mx-auto mb-2 flex justify-center items-center flex-col">
           <Avtar
             width={70}
             height={70}
@@ -90,7 +83,7 @@ const CheckPasswordPage = () => {
 
         <form className="grid gap-4 mt-5" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-1">
-            <label htmlFor="password">Password: </label>
+            <label htmlFor="password">Password:</label>
             <input
               type="password"
               id="password"
@@ -104,7 +97,7 @@ const CheckPasswordPage = () => {
           </div>
 
           <button
-            type="submit" // Make sure form submission happens
+            type="submit"
             className="bg-primary text-lg px-4 py-1 hover:bg-secondary rounded mt-2 font-bold text-white leading-relaxed tracking-wider"
           >
             Login
@@ -122,7 +115,3 @@ const CheckPasswordPage = () => {
 };
 
 export default CheckPasswordPage;
-
-
-
-
