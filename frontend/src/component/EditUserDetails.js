@@ -46,7 +46,10 @@ const EditUserDetails = ({ onClose, user }) => {
     e.preventDefault();
 
     try {
-      const URL = `${process.env.REACT_APP_BACKEND_URL}/api/UpdateUserDetails`;
+      const URL = `${
+  process.env.REACT_APP_BACKEND_URL || "https://chat-app-zac0.onrender.com"
+}/api/UpdateUserDetails`;
+
 
       // Create a JSON-safe payload by spreading only the necessary fields
       const payload = { ...data };
